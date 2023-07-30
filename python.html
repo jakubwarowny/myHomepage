@@ -19,6 +19,123 @@
             <a href="javascript.html">JavaScript</a>
             <a href="typescript.html">TypeScript</a>
         </div>
+        <div id="projectsSettings">
+            <h3 id="heading">Sterowanie światłami oraz alarmem w garażu na mikrokontrolerze Raspberry Pi Pico W</h3>
+
+            <p>W tym artykule przedstawię projekt zainstalowany na mikrokontolerze Raspberry Pi Pico W, oraz został
+                napisany w MicroPython'nie(Python).
+                <br>
+                Założeniem było, aby:
+                <br>
+                <br>
+                - Jeśli alarm jest aktywny:
+                <br>
+                Po otworzeniu bramy garażowej czujnik ruchu ma wykryć ruch oraz aktywować alarm, w tym przypadku, sygnał
+                świetlny oraz dźwiękowy.
+                <br>
+                <br>
+                - Jeśli alarm jest dezaktywowany(zielona dioda powinna się świecić):
+                <br>
+                Po otworzeniu bramy garażowej czujnik ruchu ma wykryć ruch oraz zapalić główną lampę(lampa jest również
+                podpięta pod sygnał świetlny z alarmu). Również w panelu operatorskim znajdują się 2 przyciski do
+                włączenia/wyłączenia lamp na 2 stanowiskach - każdy przycisk odpowiada danemu stanowisku, np. przycisk 1
+                odpowiada stanowisku nr. 1.
+                <br>
+                <br>
+                Aby aktywować alarm lub dezaktywować alarm trzeba wcisnąć przycisk od aktywacji alarmu.
+                <br>
+                <br>
+                Ponadto do płytki mikrokontolera jest zamocowany wentylator, który spełnia funkcję chłodzenia. W
+                przypadku jeśli tempertura mikrokontolera jest większa lub równa 35 stopni Celcjusza to wtedy wentylator
+                się załącza, jeśli wentylator schłodzi płytkę do temperatury mniejszej lub równej 27 stopni Celcjusza,
+                wtedy układ chłodzenia zostanie wyłączony.
+                <br>
+                <br>
+                Ponieżej przedstawiam fragmenty kodu z opisem:
+                <br>
+                <img src="/photo/python/photo.png" alt="photo">
+                <br>
+                W 1 lini kodu importuję bibliotekę "uasyncio", jest to biblioteka asynchronicznego we/wy w
+                MicroPythonie. Zapewnia narzędzia do programowania asynchronicznego za pomocą korutyn i pętli zdarzeń.
+                <br>
+                <br>
+
+                W 2 linii kodu importuję bibliotekę "machine", biblioteka ta umożliwia dostęp do funkcji związanych z
+                obsługą sprzętu na płytce z MicroPythonem. Obejmuje kontrolę pinów (GPIO), przetwarzanie
+                analogowo-cyfrowe (ADC), modulację PWM (szerokość impulsu), oraz inne funkcje związane z obsługą
+                sprzętu.
+                <br>
+                <br>
+                W liniach 5-11 zostały zdefiniowane obiekty reprezentujące odpowiedni piny wejściowe i wyjśćiowe oraz
+                zmienna, które będą używane z czujnikiem ruchu.
+                <br>
+                <br>
+                # Motion sensor
+                <br>
+                📝 linia 5: "alarm_led = Pin(28, Pin.OUT)" - do Pinu wyjściowego 28 została przypisana dioda, która po
+                wykryciu ruchu (jeśli alarm jest aktywny) zacznie mrugać.
+                <br>
+                📝 linia 6: "alarm_is_deactivated = Pin(27, Pin.OUT)" - do Pinu wyjściowego 27 została przypisana dioda,
+                która sygnalizuje czy alarm jest dezaktywowany (jeśli dezaktywowany świeci na zielono).
+                <br>
+                📝 linia 7: "led = Pin(26, Pin.OUT)" - do Pinu wyjściowego 26 została przypisana lampa, która w
+                przypadku wykrycia ruchu (jeśli alarm jest aktywny) zacznie mrugać.
+                <br>
+                📝 linia 8: "motion_sensor = Pin(2, Pin.IN, Pin.PULL_UP)" - do Pinu wejściowego został przypisany
+                czujnik ruchu, który daje syganł 0 (niski) lub 1 (wysoki).
+                <br>
+                📝 linia 9: "alarm = Pin(14, Pin.OUT)" - do Pinu wyjściowego 14 został przypisany sygnał dźwiękowy
+                alarmu.
+                <br>
+                📝 linia 10: "button_active_alarm = Pin(14, Pin.IN, Pin.PULL_UP)" - do Pinu wejściowego został
+                przypisany przycisk, który aktywuje alarm.
+                <br>
+                📝 linia 11: "activation_alarm = False" - jest to zmienna, która przechowuje wartośc logiczną True lub
+                False.
+                <br>
+                <br>
+                W liniach 14-17 zostały zdefiniowane obiekty reprezentujące Piny wejsciowe i wyjściowe do obsługi lamp
+                garażu w odpowienich stanowiskach.
+                <br>
+                <br>
+                # Lamps
+                <br>
+                📝 linia 14: "lamp1 = Pin(19, Pin.OUT)" - do Pinu wyjściowego 19 została przypisana lampa, która
+                znajduje się na stanowisku nr. 1.
+                <br>
+                📝 linia 15: "lamp2 = Pin(18, Pin.OUT)" - do Pinu wyjściowego 18 została przypisana lampa, która
+                znajduje się na stanowisku nr. 2.
+                <br>
+                📝 linia 16: "button_lamp1 = Pin(13, Pin.IN, Pin.PULL_UP)" - do Pinu wejściowego 13 została przypisny
+                przycisk od włącznia lamp ze stanowiska nr. 1.
+                <br>
+                📝 linia 17: "button_lamp2 = Pin(12, Pin.IN, Pin.PULL_UP)" - do Pinu wejściowego 12 została przypisny
+                przycisk od włącznia lamp ze stanowiska nr. 2.
+                <br>
+                <br>
+                W liniach 20-22 zostały zdefiniowane obiekty do odczytu temperatury z mikrokontolera Raspberry Pi Pico
+                W.
+                <br>
+                <br>
+                📝 linia 20: "sensor_temp = ADC(4)" - do Pinu 4 został przypisany czujnik temperatury z mikrokontolera.
+                <br>
+                📝 linia 21: "conversion_factor = 3.3 / 65535" - ten kod oblicza wartość przelicznika, który jest
+                używany do przekształcenia wyników pomiaru ADC na wartości napięcia. Ponieważ wynik ADC jest
+                liczbą całkowitą od 0 do 65535, dzielenie przez 65535 przelicza tę liczbę na zakres wartości od 0 do
+                3.3V, co pozwala na konwersję na odpowiednie wartości napięcia.
+                <br>
+                📝 linia 22: "fan = Pin(0, Pin.OUT)" - do 0 Pinu wyjściowego został przypisany wentylator pełniący
+                funkcję chłodzenia mikrokontolera.
+                <br>
+                <br>
+                <img src="/photo/python/photo2.png" alt="photo2">
+                <br>
+                <br>
+                W liniach 25-31 została przedstawiona funkcja asynchroniczna, która zmienia stan zmiennej
+                "activation_alarm" z False na True i na odwrót po wciśnięciu przycisku "button_active_alarm".
+
+            </p>
+        </div>
         <div id="foother">
             <span><i>Strona internetowa została stworzona z użyciem HTML, CSS oraz TypeScript</i></span>
         </div>

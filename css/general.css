@@ -94,6 +94,10 @@ img {
   a {
     font-size: 80%;
   }
+
+  #projectsSettings{
+    font-size: 120%;
+  }
 }
 
 @media screen and (min-width: 390px) and (max-width: 840px) and (orientation: portrait) {
@@ -104,6 +108,10 @@ img {
   a {
     font-size: 80%;
   }
+
+  #projectsSettings{
+    font-size: 120%;
+  }
 }
 
 @media screen and (min-width: 429px) and (orientation: portrait) {
@@ -113,5 +121,9 @@ img {
 
   a {
     font-size: 80%;
+  }
+
+  #projectsSettings{
+    font-size: 120%;
   }
 }

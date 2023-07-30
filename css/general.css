@@ -32,6 +32,12 @@ body {
   margin-top: 1%;
 }
 
+#links {
+  font-family: "Ubuntu Mono", monospace;
+  font-size: 100%;
+  color: #3a97e9;
+}
+
 a {
   color: aliceblue;
   font-family: "VT323", monospace;

@@ -87,7 +87,26 @@ img {
 }
 
 @media screen and (max-width: 375px) and (max-height: 667px) {
-  /* Przykładowe zmiany stylu dla iPhone SE */
+  #navBar {
+    width: 90%;
+  }
+
+  a {
+    font-size: 80%;
+  }
+}
+
+@media screen and (min-width: 390px) and (max-width: 840px) and (orientation: portrait) {
+  #navBar {
+    width: 90%;
+  }
+
+  a {
+    font-size: 80%;
+  }
+}
+
+@media screen and (min-width: 429px) and (orientation: portrait) {
   #navBar {
     width: 90%;
   }
